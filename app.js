@@ -34,7 +34,7 @@ model.addEventListener('error',()=>{
   progress.hidden=true;state.textContent='暂时无法打开三维模型';
 });
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
-  const view=presets[button.dataset.view];model.cameraTarget=view.target;model.cameraOrbit=view.orbit;
+  const view=presets[button.dataset.view];model.setAttribute('camera-target',view.target);model.setAttribute('camera-orbit',view.orbit);
   model.autoRotate=false;rotate.setAttribute('aria-pressed','false');rotate.textContent='自动旋转';
   document.querySelectorAll('[data-view]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
 }));
@@ -42,6 +42,30 @@ rotate.addEventListener('click',()=>{
   model.autoRotate=!model.autoRotate;rotate.setAttribute('aria-pressed',String(model.autoRotate));
   rotate.textContent=model.autoRotate?'暂停旋转':'自动旋转';
 });
+function stopRotation(){
+  model.autoRotate=false;rotate.setAttribute('aria-pressed','false');rotate.textContent='自动旋转';
+}
+document.querySelectorAll('[data-pan]').forEach(button=>button.addEventListener('click',()=>{
+  stopRotation();
+  const {theta,phi,radius}=model.getCameraOrbit();
+  const target=model.getCameraTarget();
+  const step=Math.max(1,radius*.045);
+  const angle=theta-model.turntableRotation;
+  // Camera-space right and up vectors, projected into model coordinates.
+  const right=[Math.cos(angle),0,-Math.sin(angle)];
+  const up=[-Math.cos(phi)*Math.sin(angle),Math.sin(phi),-Math.cos(phi)*Math.cos(angle)];
+  const direction=button.dataset.pan;
+  const vector=direction==='left'||direction==='right'?right:up;
+  const sign=direction==='left'||direction==='down'?-1:1;
+  model.setAttribute('camera-target',`${target.x+vector[0]*step*sign}m ${target.y+vector[1]*step*sign}m ${target.z+vector[2]*step*sign}m`);
+  document.querySelectorAll('[data-view]').forEach(item=>item.setAttribute('aria-pressed','false'));
+}));
+document.querySelectorAll('[data-zoom]').forEach(button=>button.addEventListener('click',()=>{
+  stopRotation();
+  const {theta,phi,radius}=model.getCameraOrbit();
+  const next=Math.min(1100,Math.max(35,radius*(button.dataset.zoom==='in'?.8:1.25)));
+  model.setAttribute('camera-orbit',`${theta}rad ${phi}rad ${next}m`);
+}));
 document.querySelector('#fullscreen').addEventListener('click',async()=>{
   try{
     if(document.fullscreenElement)await document.exitFullscreen();

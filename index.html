@@ -31,11 +31,16 @@
           <div class="start-card"><span class="eyebrow">ENTER THE CAMPUS</span><h2>亲手转动这座校园</h2><p>首次加载约 30 MB，建议使用 Wi-Fi。</p><button id="load-model" class="primary">打开三维模型 <span aria-hidden="true">↗</span></button><p class="load-status" id="load-status" role="status" aria-live="polite">也可以直接向下浏览高清渲染图。</p><progress id="progress" max="1" value="0" hidden aria-label="模型加载进度"></progress></div>
         </div>
       </model-viewer>
-      <div class="viewer-caption"><span class="live-dot" aria-hidden="true"></span><span id="viewer-state">三维校园 · 等待打开</span><span class="viewer-hint">拖动旋转 · 滚轮 / 双指缩放 · 右键拖动平移</span></div>
+      <div class="viewer-caption"><span class="live-dot" aria-hidden="true"></span><span id="viewer-state">三维校园 · 等待打开</span><span class="viewer-hint">拖动旋转 · Shift＋左键拖动平移</span></div>
       <div class="controls" aria-label="模型视角">
         <div class="views"><button data-view="overview" aria-pressed="true" disabled>全校鸟瞰</button><button data-view="courtyard" aria-pressed="false" disabled>教学广场</button><button data-view="sports" aria-pressed="false" disabled>运动场</button><button data-view="plan" aria-pressed="false" disabled>总平面</button></div>
         <div class="tools"><button id="rotate" aria-pressed="false" disabled>自动旋转</button><button id="fullscreen" disabled>全屏观看</button></div>
       </div>
+      <div class="controls navigation-controls" aria-label="无需手势的视角操作">
+        <div class="tools"><span class="control-label">平移视角</span><button data-pan="left" aria-label="视角向左平移" disabled>←</button><button data-pan="up" aria-label="视角向上平移" disabled>↑</button><button data-pan="down" aria-label="视角向下平移" disabled>↓</button><button data-pan="right" aria-label="视角向右平移" disabled>→</button></div>
+        <div class="tools"><span class="control-label">缩放</span><button data-zoom="out" aria-label="缩小模型" disabled>−</button><button data-zoom="in" aria-label="放大模型" disabled>＋</button></div>
+      </div>
+      <p class="interaction-help">MacBook：按住 Shift，再用单指按下触控板拖动即可平移，无需右键。若触控板手势与浏览器冲突，可直接使用上方箭头和缩放按钮；点击「全校鸟瞰」恢复初始视角。</p>
       <p id="viewer-message" class="viewer-message" aria-live="polite">网页使用轻量化材质与植栽；精细光照效果请看下方渲染图。</p>
     </section>
     <section class="gallery-section" id="gallery">
