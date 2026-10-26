@@ -1,0 +1,23 @@
+{
+  "bytes": 30282548,
+  "objects": 2600,
+  "foliage": [
+    {
+      "source": "Broadleaf 1981 · individual leaves",
+      "original_faces": 327600,
+      "web_faces": 16380
+    },
+    {
+      "source": "Broadleaf 2018 · individual leaves",
+      "original_faces": 327600,
+      "web_faces": 16380
+    },
+    {
+      "source": "Broadleaf 2055 · individual leaves",
+      "original_faces": 327600,
+      "web_faces": 16380
+    }
+  ],
+  "source": "output/detail/xmfls_haicang_premium.blend",
+  "note": "Web copy uses reduced leaf geometry and portable materials; full Blender source is unchanged."
+}

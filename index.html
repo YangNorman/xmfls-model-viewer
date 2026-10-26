@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#edece5">
+  <meta name="description" content="厦门外国语学校海沧校区的三维外观重建。在线旋转、缩放校园模型，浏览建筑渲染。">
+  <title>厦外 · 海沧 | 校园三维展厅</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <a class="brand" href="#" aria-label="回到顶部"><span class="brand-mark" aria-hidden="true">外</span><span>厦外 · 海沧<small>CAMPUS IN THREE DIMENSIONS</small></span></a>
+    <nav aria-label="页面导航"><a href="#exhibit">三维模型</a><a href="#gallery">建筑影像</a><a href="#about">关于重建</a></nav>
+  </header>
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow">XIAMEN FOREIGN LANGUAGE SCHOOL</p><h1>把校园，放在手心。</h1></div>
+      <p class="intro-note">从穹顶与红白长廊，到操场与林荫路。<br>拖动模型，换一个角度看海沧校区。</p>
+    </section>
+    <section id="exhibit" class="exhibit" aria-label="可交互校园模型">
+      <model-viewer id="campus" alt="厦门外国语学校海沧校区三维模型，含教学楼、穹顶塔、庭院和运动场"
+        poster="images/final_01.jpg" reveal="manual" loading="eager" camera-controls
+        touch-action="pan-y" interaction-prompt="none" environment-image="environment.hdr"
+        shadow-intensity="0.9" shadow-softness="0.8" exposure="0.9" tone-mapping="aces"
+        camera-orbit="38deg 52deg 650m" camera-target="0m 12m 0m"
+        min-camera-orbit="auto 5deg 35m" max-camera-orbit="auto 87deg 1100m"
+        field-of-view="38deg" min-field-of-view="20deg" max-field-of-view="55deg">
+        <div slot="poster" class="poster-overlay" id="poster-overlay">
+          <div class="start-card"><span class="eyebrow">ENTER THE CAMPUS</span><h2>亲手转动这座校园</h2><p>首次加载约 30 MB，建议使用 Wi-Fi。</p><button id="load-model" class="primary">打开三维模型 <span aria-hidden="true">↗</span></button><p class="load-status" id="load-status" role="status" aria-live="polite">也可以直接向下浏览高清渲染图。</p><progress id="progress" max="1" value="0" hidden aria-label="模型加载进度"></progress></div>
+        </div>
+      </model-viewer>
+      <div class="viewer-caption"><span class="live-dot" aria-hidden="true"></span><span id="viewer-state">三维校园 · 等待打开</span><span class="viewer-hint">拖动旋转 · 滚轮 / 双指缩放 · 右键拖动平移</span></div>
+      <div class="controls" aria-label="模型视角">
+        <div class="views"><button data-view="overview" aria-pressed="true" disabled>全校鸟瞰</button><button data-view="courtyard" aria-pressed="false" disabled>教学广场</button><button data-view="sports" aria-pressed="false" disabled>运动场</button><button data-view="plan" aria-pressed="false" disabled>总平面</button></div>
+        <div class="tools"><button id="rotate" aria-pressed="false" disabled>自动旋转</button><button id="fullscreen" disabled>全屏观看</button></div>
+      </div>
+      <p id="viewer-message" class="viewer-message" aria-live="polite">网页使用轻量化材质与植栽；精细光照效果请看下方渲染图。</p>
+    </section>
+    <section class="gallery-section" id="gallery">
+      <div class="section-heading"><div><p class="eyebrow">ARCHITECTURAL PORTRAITS</p><h2>光影里的校园</h2></div><p>九个视角，日景与暮色。<br>点击图片查看大图。</p></div>
+      <div class="gallery">
+        <a class="image-card wide" href="images/final_08.jpg" target="_blank" rel="noopener"><img src="images/final_08.jpg" loading="lazy" alt="穹顶塔、校门和中心庭院的低空日景渲染"><span><b>01</b> 穹顶与庭院 <i>↗</i></span></a>
+        <a class="image-card" href="images/final_04.jpg" target="_blank" rel="noopener"><img src="images/final_04.jpg" loading="lazy" alt="广场人视角渲染"><span><b>02</b> 广场一隅 <i>↗</i></span></a>
+        <a class="image-card" href="images/final_07.jpg" target="_blank" rel="noopener"><img src="images/final_07.jpg" loading="lazy" alt="方钟楼与林荫步道渲染"><span><b>03</b> 钟楼与林荫 <i>↗</i></span></a>
+        <a class="image-card wide" href="images/final_08_dusk.jpg" target="_blank" rel="noopener"><img src="images/final_08_dusk.jpg" loading="lazy" alt="中心庭院的艺术暮色灯光方案"><span><b>04</b> 暮色灯光想象 <i>↗</i></span></a>
+        <a class="image-card" href="images/final_05.jpg" target="_blank" rel="noopener"><img src="images/final_05.jpg" loading="lazy" alt="校门正面渲染"><span><b>05</b> 从这里出发 <i>↗</i></span></a>
+        <a class="image-card" href="images/final_02.jpg" target="_blank" rel="noopener"><img src="images/final_02.jpg" loading="lazy" alt="教学建筑群鸟瞰渲染"><span><b>06</b> 红白长廊 <i>↗</i></span></a>
+        <a class="image-card" href="images/final_01.jpg" target="_blank" rel="noopener"><img src="images/final_01.jpg" loading="lazy" alt="校园整体鸟瞰渲染"><span><b>07</b> 校园全貌 <i>↗</i></span></a>
+        <a class="image-card" href="images/final_03.jpg" target="_blank" rel="noopener"><img src="images/final_03.jpg" loading="lazy" alt="校园总平面渲染"><span><b>08</b> 校园平面 <i>↗</i></span></a>
+        <a class="image-card portrait" href="images/final_06.jpg" target="_blank" rel="noopener"><img src="images/final_06.jpg" loading="lazy" alt="穹顶塔楼竖幅渲染"><span><b>09</b> 仰望穹顶 <i>↗</i></span></a>
+      </div>
+    </section>
+    <section id="about" class="about"><div><p class="eyebrow">ABOUT THIS RECONSTRUCTION</p><h2>从照片与地图，<br>重新认识一座校园。</h2></div><div class="about-copy"><p>这是厦门外国语学校海沧校区的非官方外观重建。建筑布局参考公开地图，主要立面与地标细节参考学校及校园报道照片。</p><p>它是一件可探索的建筑模型，并非测绘成果。部分楼高、屋顶、泳馆外形和植物位置仍为近似；未建完整室内。暮色影像采用艺术化补光。</p><p class="credits">地图 © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>，ODbL。渲染环境与部分材质来自 <a href="https://polyhaven.com/" target="_blank" rel="noopener">Poly Haven</a>，CC0。查看器使用 Google &lt;model-viewer&gt;。</p><div class="about-links"><a href="https://github.com/YangNorman/xmfls-model-viewer" target="_blank" rel="noopener">公开展示仓库 ↗</a><a href="campus.glb" download>下载网页模型 ↓</a></div></div></section>
+  </main>
+  <footer><span>厦外 · 海沧校园三维展厅</span><span>个人重建项目 · 2026</span></footer>
+</body>
+</html>
