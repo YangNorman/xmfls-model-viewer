@@ -2,6 +2,8 @@
 
 在线查看：https://yangnorman.github.io/xmfls-model-viewer/
 
+[实拍校正版 · 公开课室与校园](https://yangnorman.github.io/xmfls-model-viewer/studio/) 增加了实拍辅助重建的公开课室，并修正校门、喷泉与体育馆局部外观。可调整光线、切换视角、保存画面和下载模型。来源与推定范围见 [版本说明](studio/PHOTO-REVIEW.md)。
+
 支持旋转、缩放、平移、四个预设视角、自动旋转与桌面全屏；手机可使用双指缩放。首次点击加载约 30 MB 的模型。
 
 MacBook 用户可以按住 **Shift＋左键/触控板按下拖动**平移，不必使用右键。页面也提供四个平移箭头和放大/缩小按钮，可避开浏览器手势冲突；「全校鸟瞰」恢复初始视角。
