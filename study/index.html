@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>厦门外国语学校 · 海沧校区</title>
+<script>
+  const target = new URL('../', location.href);
+  target.search = location.search;
+  const place = location.hash.slice(1);
+  target.hash = place && place !== 'campus' ? place : 'overview';
+  location.replace(target.href);
+</script>
+<noscript><meta http-equiv="refresh" content="0; url=../"></noscript>
+</head><body><a href="../">打开校园导览</a></body></html>

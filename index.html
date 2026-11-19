@@ -2,64 +2,65 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#edece5">
-  <meta name="description" content="厦门外国语学校海沧校区的三维外观重建。在线旋转、缩放校园模型，浏览建筑渲染。">
-  <title>厦外 · 海沧 | 校园三维展厅</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="app.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#183c33">
+  <meta name="description" content="浏览厦门外国语学校海沧校区三维模型。">
+  <title>厦门外国语学校 · 海沧校区</title>
+  <link rel="icon" href="images/tour/thumbs/overview.jpg">
+  <link rel="stylesheet" href="./style.css?v=20261119-sports">
+  <script type="module" src="./app.js?v=20261119-sports"></script>
 </head>
 <body>
-  <header class="masthead">
-    <a class="brand" href="#" aria-label="回到顶部"><span class="brand-mark" aria-hidden="true">外</span><span>厦外 · 海沧<small>CAMPUS IN THREE DIMENSIONS</small></span></a>
-    <nav aria-label="页面导航"><a href="#exhibit">三维模型</a><a href="#gallery">建筑影像</a><a href="#about">关于重建</a></nav>
+  <header class="bar">
+    <a class="brand" href="#overview"><i class="mark" aria-hidden="true"></i><span>厦门外国语学校</span><small>海沧校区</small></a>
+    <div class="utilities">
+      <button id="gallery-button" type="button"><i class="photo-icon" aria-hidden="true"></i>效果图</button>
+      <button id="settings-button" type="button" aria-label="设置与说明" title="设置与说明"><span aria-hidden="true">•••</span></button>
+    </div>
   </header>
-  <main>
-    <a href="studio/" style="display:block;margin-top:24px;padding:20px 24px;background:#243e35;color:#f4f2eb;text-decoration:none;line-height:1.8"><strong style="font-size:20px">实拍校正版 · 公开课室与校园 ↗</strong></a>
-    <section class="intro">
-      <div><p class="eyebrow">XIAMEN FOREIGN LANGUAGE SCHOOL</p><h1>把校园，放在手心。</h1></div>
-      <p class="intro-note">从穹顶与红白长廊，到操场与林荫路。<br>拖动模型，换一个角度看海沧校区。</p>
-    </section>
-    <section id="exhibit" class="exhibit" aria-label="可交互校园模型">
-      <model-viewer id="campus" alt="厦门外国语学校海沧校区三维模型，含教学楼、穹顶塔、庭院和运动场"
-        poster="images/final_01.jpg" reveal="manual" loading="eager" camera-controls
-        touch-action="pan-y" interaction-prompt="none" environment-image="environment.hdr"
-        shadow-intensity="0.9" shadow-softness="0.8" exposure="0.9" tone-mapping="aces"
-        camera-orbit="38deg 52deg 650m" camera-target="0m 12m 0m"
-        min-camera-orbit="auto 5deg 35m" max-camera-orbit="auto 87deg 1100m"
-        field-of-view="38deg" min-field-of-view="20deg" max-field-of-view="55deg">
-        <div slot="poster" class="poster-overlay" id="poster-overlay">
-          <div class="start-card"><span class="eyebrow">ENTER THE CAMPUS</span><h2>亲手转动这座校园</h2><p>首次加载约 30 MB，建议使用 Wi-Fi。</p><button id="load-model" class="primary">打开三维模型 <span aria-hidden="true">↗</span></button><p class="load-status" id="load-status" role="status" aria-live="polite">也可以直接向下浏览高清渲染图。</p><progress id="progress" max="1" value="0" hidden aria-label="模型加载进度"></progress></div>
+  <main class="workspace">
+    <aside class="rail" aria-label="地点导航">
+      <h1>校园导览</h1>
+      <button id="place-picker" aria-expanded="false" aria-controls="destinations">校园全景 <span aria-hidden="true">⌄</span></button>
+      <nav id="destinations" aria-label="选择地点"></nav>
+      <a class="plan-link" href="#plan" aria-label="查看总平面"><span class="plan-preview"></span><b>总平面</b><span aria-hidden="true">↗</span></a>
+    </aside>
+    <section id="stage" aria-label="校园三维模型">
+      <img id="poster" src="images/tour/campus.jpg" alt="海沧校区全景渲染">
+      <div id="viewport"></div>
+      <div class="status-box" id="status-box"><span id="status" role="status">正在打开校园…</span><button id="retry" hidden>重试</button></div>
+      <div class="view-controls" id="room-views" hidden>
+        <label for="room-view">室内视角</label>
+        <select id="room-view"><option>后排看讲台</option><option>左侧教学区</option><option>侧墙与桌椅</option><option>桌椅细节</option><option>后排观察席</option></select>
+      </div>
+      <div class="stage-bottom">
+        <span class="hint" id="hint">拖动旋转 · 滚轮缩放</span>
+        <div class="dock" aria-label="视角操作">
+          <button id="zoom-out" aria-label="缩小" title="缩小" data-live>−</button>
+          <button id="zoom-in" aria-label="放大" title="放大" data-live>＋</button>
+          <button id="pan-button" aria-label="平移视角" aria-controls="pan-pad" aria-expanded="false" title="平移视角" data-live>✥</button>
+          <button id="reset" aria-label="复位到当前地点" title="复位到当前地点" data-live>↺</button>
+          <button id="fullscreen" aria-label="全屏" title="全屏"><i class="expand-icon" aria-hidden="true"></i></button>
         </div>
-      </model-viewer>
-      <div class="viewer-caption"><span class="live-dot" aria-hidden="true"></span><span id="viewer-state">三维校园 · 等待打开</span><span class="viewer-hint">拖动旋转 · Shift＋左键拖动平移</span></div>
-      <div class="controls" aria-label="模型视角">
-        <div class="views"><button data-view="overview" aria-pressed="true" disabled>全校鸟瞰</button><button data-view="courtyard" aria-pressed="false" disabled>教学广场</button><button data-view="sports" aria-pressed="false" disabled>运动场</button><button data-view="plan" aria-pressed="false" disabled>总平面</button></div>
-        <div class="tools"><button id="rotate" aria-pressed="false" disabled>自动旋转</button><button id="fullscreen" disabled>全屏观看</button></div>
       </div>
-      <div class="controls navigation-controls" aria-label="无需手势的视角操作">
-        <div class="tools"><span class="control-label">平移视角</span><button data-pan="left" aria-label="视角向左平移" disabled>←</button><button data-pan="up" aria-label="视角向上平移" disabled>↑</button><button data-pan="down" aria-label="视角向下平移" disabled>↓</button><button data-pan="right" aria-label="视角向右平移" disabled>→</button></div>
-        <div class="tools"><span class="control-label">缩放</span><button data-zoom="out" aria-label="缩小模型" disabled>−</button><button data-zoom="in" aria-label="放大模型" disabled>＋</button></div>
-      </div>
-      <p class="interaction-help">MacBook：按住 Shift，再用单指按下触控板拖动即可平移，无需右键。若触控板手势与浏览器冲突，可直接使用上方箭头和缩放按钮；点击「全校鸟瞰」恢复初始视角。</p>
-      <p id="viewer-message" class="viewer-message" aria-live="polite">网页使用轻量化材质与植栽；精细光照效果请看下方渲染图。</p>
+      <div id="pan-pad" hidden aria-label="平移方向"><button data-pan="left" aria-label="向左平移">←</button><button data-pan="up" aria-label="向上平移">↑</button><button data-pan="down" aria-label="向下平移">↓</button><button data-pan="right" aria-label="向右平移">→</button></div>
+      <noscript><p class="static-note">启用 JavaScript 可转动校园模型。也可<a href="images/court-20261119.jpg">查看教学广场效果图</a>。</p></noscript>
     </section>
-    <section class="gallery-section" id="gallery">
-      <div class="section-heading"><div><p class="eyebrow">ARCHITECTURAL PORTRAITS</p><h2>光影里的校园</h2></div><p>九个视角，日景与暮色。<br>点击图片查看大图。</p></div>
-      <div class="gallery">
-        <a class="image-card wide" href="images/final_08.jpg" target="_blank" rel="noopener"><img src="images/final_08.jpg" loading="lazy" alt="穹顶塔、校门和中心庭院的低空日景渲染"><span><b>01</b> 穹顶与庭院 <i>↗</i></span></a>
-        <a class="image-card" href="images/final_04.jpg" target="_blank" rel="noopener"><img src="images/final_04.jpg" loading="lazy" alt="广场人视角渲染"><span><b>02</b> 广场一隅 <i>↗</i></span></a>
-        <a class="image-card" href="images/final_07.jpg" target="_blank" rel="noopener"><img src="images/final_07.jpg" loading="lazy" alt="方钟楼与林荫步道渲染"><span><b>03</b> 钟楼与林荫 <i>↗</i></span></a>
-        <a class="image-card wide" href="images/final_08_dusk.jpg" target="_blank" rel="noopener"><img src="images/final_08_dusk.jpg" loading="lazy" alt="中心庭院的艺术暮色灯光方案"><span><b>04</b> 暮色灯光想象 <i>↗</i></span></a>
-        <a class="image-card" href="images/final_05.jpg" target="_blank" rel="noopener"><img src="images/final_05.jpg" loading="lazy" alt="校门正面渲染"><span><b>05</b> 从这里出发 <i>↗</i></span></a>
-        <a class="image-card" href="images/final_02.jpg" target="_blank" rel="noopener"><img src="images/final_02.jpg" loading="lazy" alt="教学建筑群鸟瞰渲染"><span><b>06</b> 红白长廊 <i>↗</i></span></a>
-        <a class="image-card" href="images/final_01.jpg" target="_blank" rel="noopener"><img src="images/final_01.jpg" loading="lazy" alt="校园整体鸟瞰渲染"><span><b>07</b> 校园全貌 <i>↗</i></span></a>
-        <a class="image-card" href="images/final_03.jpg" target="_blank" rel="noopener"><img src="images/final_03.jpg" loading="lazy" alt="校园总平面渲染"><span><b>08</b> 校园平面 <i>↗</i></span></a>
-        <a class="image-card portrait" href="images/final_06.jpg" target="_blank" rel="noopener"><img src="images/final_06.jpg" loading="lazy" alt="穹顶塔楼竖幅渲染"><span><b>09</b> 仰望穹顶 <i>↗</i></span></a>
-      </div>
-    </section>
-    <section id="about" class="about"><div><p class="eyebrow">ABOUT THIS RECONSTRUCTION</p><h2>从照片与地图，<br>重新认识一座校园。</h2></div><div class="about-copy"><p>这是厦门外国语学校海沧校区的非官方外观重建。建筑布局参考公开地图，主要立面与地标细节参考学校及校园报道照片。</p><p>它是一件可探索的建筑模型，并非测绘成果。部分楼高、屋顶、泳馆外形和植物位置仍为近似；未建完整室内。暮色影像采用艺术化补光。</p><p class="credits">地图 © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>，ODbL。渲染环境与部分材质来自 <a href="https://polyhaven.com/" target="_blank" rel="noopener">Poly Haven</a>，CC0。查看器使用 Google &lt;model-viewer&gt;。</p><div class="about-links"><a href="https://github.com/YangNorman/xmfls-model-viewer" target="_blank" rel="noopener">公开展示仓库 ↗</a><a href="campus.glb" download>下载网页模型 ↓</a></div></div></section>
   </main>
-  <footer><span>厦外 · 海沧校园三维展厅</span><span>个人重建项目 · 2026</span></footer>
+  <dialog id="gallery" aria-labelledby="gallery-title">
+    <div class="dialog-head"><h2 id="gallery-title">效果图</h2><button class="close" aria-label="关闭效果图">×</button></div>
+    <figure><img id="gallery-image" alt=""><figcaption><span id="image-title"></span><div class="gallery-controls"><button id="prev" aria-label="上一张">←</button><span id="image-count"></span><button id="next" aria-label="下一张">→</button></div></figcaption></figure>
+  </dialog>
+  <dialog id="settings" aria-labelledby="settings-title">
+    <div class="dialog-head"><h2 id="settings-title">设置与说明</h2><button class="close" aria-label="关闭设置">×</button></div>
+    <div class="settings-body">
+      <label>亮度 <input id="exposure" type="range" min="0.55" max="1.75" step="0.05" value="1"></label>
+      <label>地面阴影 <input id="shadows" type="checkbox"></label>
+      <label>自动旋转 <input id="rotation" type="checkbox"></label>
+      <div class="file-actions"><button id="capture" data-live>保存画面</button><a id="download" download href="models/campus-sports-20261119.glb">下载校园模型</a></div>
+      <p>拖动旋转，滚轮或双指缩放。按住 Shift 拖动可平移，也可使用画面右下角的平移按钮。</p>
+      <details><summary>模型依据与署名</summary><p>校园外观参考海沧校区实拍与公开地图。主席台和体育馆临场立面参考运动会、成人礼及军训照片。建筑尺寸、体育馆背面及屋盖向后的形状为估计。公开课室参考语文、英语公开课照片。</p><p>地图 © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>（ODbL）。环境光与部分材质来自 <a href="https://polyhaven.com/">Poly Haven</a>（CC0）。使用 Google model-viewer 和 Draco。个人重建项目。</p></details>
+    </div>
+  </dialog>
 </body>
 </html>
