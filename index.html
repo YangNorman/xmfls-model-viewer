@@ -7,8 +7,8 @@
   <meta name="description" content="浏览厦门外国语学校海沧校区三维模型。">
   <title>厦门外国语学校 · 海沧校区</title>
   <link rel="icon" href="images/tour/thumbs/overview.jpg">
-  <link rel="stylesheet" href="./style.css?v=20261119-sports">
-  <script type="module" src="./app.js?v=20261119-sports"></script>
+  <link rel="stylesheet" href="./style.css?v=unified-20261120">
+  <script type="module" src="./app.js?v=forecourt-20261120"></script>
 </head>
 <body>
   <header class="bar">
@@ -26,12 +26,14 @@
       <a class="plan-link" href="#plan" aria-label="查看总平面"><span class="plan-preview"></span><b>总平面</b><span aria-hidden="true">↗</span></a>
     </aside>
     <section id="stage" aria-label="校园三维模型">
-      <img id="poster" src="images/tour/campus.jpg" alt="海沧校区全景渲染">
+      <img id="poster" src="images/haicang-20261120/overview.jpg" alt="海沧校区全景渲染">
       <div id="viewport"></div>
       <div class="status-box" id="status-box"><span id="status" role="status">正在打开校园…</span><button id="retry" hidden>重试</button></div>
       <div class="view-controls" id="room-views" hidden>
-        <label for="room-view">室内视角</label>
-        <select id="room-view"><option>后排看讲台</option><option>左侧教学区</option><option>侧墙与桌椅</option><option>桌椅细节</option><option>后排观察席</option></select>
+        <label id="set-label" for="film-set" hidden>陈设</label>
+        <select id="film-set" hidden></select>
+        <label for="room-view">视角</label>
+        <select id="room-view"></select>
       </div>
       <div class="stage-bottom">
         <span class="hint" id="hint">拖动旋转 · 滚轮缩放</span>
@@ -49,7 +51,8 @@
   </main>
   <dialog id="gallery" aria-labelledby="gallery-title">
     <div class="dialog-head"><h2 id="gallery-title">效果图</h2><button class="close" aria-label="关闭效果图">×</button></div>
-    <figure><img id="gallery-image" alt=""><figcaption><span id="image-title"></span><div class="gallery-controls"><button id="prev" aria-label="上一张">←</button><span id="image-count"></span><button id="next" aria-label="下一张">→</button></div></figcaption></figure>
+    <figure><div id="gallery-pair"><div class="ref-panel"><span>实拍</span><img id="reference-image" hidden alt="同机位实拍"></div><div class="model-panel"><span>模型渲染</span><img id="gallery-image" alt=""></div></div><figcaption><span id="image-title"></span><div class="gallery-controls"><button id="prev" aria-label="上一张">←</button><span id="image-count"></span><button id="next" aria-label="下一张">→</button></div></figcaption></figure>
+    <div class="slide-actions"><button id="open-shot">在三维中查看</button><button id="compare-shot" hidden>与实拍并排</button><a id="source-shot" target="_blank" rel="noopener" hidden>查看原片 ↗</a></div>
   </dialog>
   <dialog id="settings" aria-labelledby="settings-title">
     <div class="dialog-head"><h2 id="settings-title">设置与说明</h2><button class="close" aria-label="关闭设置">×</button></div>
@@ -57,9 +60,9 @@
       <label>亮度 <input id="exposure" type="range" min="0.55" max="1.75" step="0.05" value="1"></label>
       <label>地面阴影 <input id="shadows" type="checkbox"></label>
       <label>自动旋转 <input id="rotation" type="checkbox"></label>
-      <div class="file-actions"><button id="capture" data-live>保存画面</button><a id="download" download href="models/campus-sports-20261119.glb">下载校园模型</a></div>
+      <div class="file-actions"><button id="capture" data-live>保存画面</button><a id="download" download href="models/haicang-20261120/campus.glb">下载校园模型</a></div>
       <p>拖动旋转，滚轮或双指缩放。按住 Shift 拖动可平移，也可使用画面右下角的平移按钮。</p>
-      <details><summary>模型依据与署名</summary><p>校园外观参考海沧校区实拍与公开地图。主席台和体育馆临场立面参考运动会、成人礼及军训照片。建筑尺寸、体育馆背面及屋盖向后的形状为估计。公开课室参考语文、英语公开课照片。</p><p>地图 © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>（ODbL）。环境光与部分材质来自 <a href="https://polyhaven.com/">Poly Haven</a>（CC0）。使用 Google model-viewer 和 Draco。个人重建项目。</p></details>
+      <details><summary>模型依据与署名</summary><p>影片教室依据厦外学生短片<a href="https://www.bilibili.com/video/BV1ux411H7nS/">《Another Day of Sun》</a>重建。校园细节另参考实拍、<a href="https://www.bilibili.com/video/BV17z42117Te/">《厦门外国语学校校歌》</a>与<a href="https://www.bilibili.com/video/BV1ks411j7Xb/">《Teacher Alex 老师的一天》</a>。房间尺寸、遮挡面与器材数量为估计。公开课室参考语文、英语公开课照片。</p><p>地图 © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>（ODbL）。环境光与部分材质来自 <a href="https://polyhaven.com/">Poly Haven</a>（CC0）。使用 Google model-viewer 和 Draco。个人重建项目。</p></details>
     </div>
   </dialog>
 </body>

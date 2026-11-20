@@ -43,7 +43,7 @@ h1 { margin: 0 10px 18px; font-size: 29px; line-height: 1.2; font-weight: 500; l
 #destinations a[aria-current="location"]::after { content: ""; margin-left:auto; width: 6px; height: 6px; background: #427451; border-radius: 50%; }
 #destinations a.indoor { margin-top: 6px; border-top: 1px solid var(--line); padding-top: 5px; min-height: 45px; border-radius: 0; }
 .plan-link { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 8px; text-decoration: none; padding: 10px 7px; border-top: 1px solid var(--line); font-size: 13px; }
-.plan-preview { height: 32px; background: center / cover url("images/tour/plan.jpg"); border-radius: 2px; }
+.plan-preview { height: 32px; background: center / cover url("images/haicang-20261120/plan.jpg"); border-radius: 2px; }
 .plan-link b { font-weight: 500; }
 #place-picker { display: none; }
 #stage { position: relative; isolation: isolate; overflow: hidden; min-width: 0; background: radial-gradient(ellipse at 45% 40%, #eef0e9 0%,#dce2d8 73%,#cbd5cc); }
@@ -112,10 +112,26 @@ figcaption { padding: 7px 16px; display: flex; justify-content: space-between; a
 @media(min-width:701px){#destinations a.mobile-plan{display:none}}
 @media(max-width:700px) and (min-height:580px){
  .workspace { flex-direction:column-reverse; }
- .rail { height:auto; display:block; padding:12px 12px max(12px,env(safe-area-inset-bottom)); border-top:1px solid var(--line); border-bottom:0; }
- .rail h1 { font-size:19px; margin:0 0 8px 3px; }
- #place-picker { display:none; }
- #destinations,.rail.open #destinations { position:static; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:3px; padding:0; border:0; overflow:visible; }
- #destinations a,#destinations a.indoor { min-height:40px; padding:0 10px; font-size:14px; }
+ .rail { height:auto; min-height:52px; padding:3px 14px max(3px,env(safe-area-inset-bottom)); border-top:1px solid var(--line); border-bottom:0; }
+ .rail h1 { font-size:19px; margin:0; }
+ #destinations { top:auto; bottom:100%; border:1px solid var(--line); border-width:1px 0; box-shadow:0 -6px 20px #253b2612; }
+ .rail.open #destinations { grid-template-columns:repeat(3,minmax(0,1fr)); }
+ #place-picker span { transform:rotate(180deg); }
+ .rail.open #place-picker span { transform:none; }
+ #destinations a,#destinations a.indoor { min-height:44px; padding:0 10px; font-size:14px; }
  #destinations a[aria-current="location"]::after {width:5px;height:5px}
 }
+.view-controls{max-width:calc(100% - 36px);flex-wrap:wrap}
+.view-controls select{min-width:0;max-width:min(58vw,260px)}
+#stage[data-choices="true"] .status-box{top:72px}
+#stage[data-night="true"]{background:#121827}
+.slide-actions{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:0 18px 14px;font-size:13px}
+.slide-actions button,.slide-actions a{border:1px solid var(--line);border-radius:3px;padding:6px 10px;color:var(--pine);text-decoration:none}
+#gallery-pair.compared{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+#gallery-pair.compared img{width:100%;min-width:0;object-fit:contain;align-self:center}
+#gallery-pair:not(.compared) .ref-panel,#gallery-pair:not(.compared) .model-panel span{display:none}
+#gallery-pair.compared>div{min-width:0;align-self:center}
+#gallery-pair.compared span{display:block;padding:5px 10px;font-size:12px;color:var(--muted)}
+#gallery-pair.compared #gallery-image{height:auto;max-height:54dvh}
+@media(max-width:700px){.view-controls{max-width:calc(100% - 16px);gap:4px}.view-controls select{max-width:47vw}.view-controls label{margin:0}.view-controls #film-set{max-width:19vw}#gallery-pair.compared{grid-template-columns:1fr}#gallery-pair.compared img{max-height:30dvh}}
+@media(max-width:700px){#gallery-pair.compared #gallery-image{max-height:30dvh}}

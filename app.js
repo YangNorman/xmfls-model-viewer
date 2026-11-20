@@ -1,4 +1,4 @@
-import { CAMPUS, ROOM, places, roomViews, images } from './places.js';
+import { CAMPUS, places, viewOptions, images } from './places.js?v=forecourt-20261120';
 
 const $ = id => document.getElementById(id);
 const mobile = matchMedia('(max-width:700px)');
@@ -10,12 +10,30 @@ let loadGeneration = 0;
 let slide = 0;
 let library;
 let slowTimer;
+const isInterior = () => active==='room' || active==='film';
+let shot;
+const selectedView = () => shot || places[active];
+const localReferences = document.documentElement.hasAttribute('data-local-review');
+let comparing = false;
+if(localReferences) {
+  for(const [label,path] of [['完整 Blender 工程','haicang-campus.blend'],['对照图册','comparison.pdf']]){
+    const a=document.createElement('a');
+    a.href='/__native/'+path;a.download=path;a.textContent=label;
+    document.querySelector('.file-actions').append(a);
+  }
+}
+
+function navigate(place,id) {
+  const dest = '#'+place+(id?'/'+id:'');
+  if(location.hash===dest) selectPlace();
+  else location.hash=dest;
+}
 
 function setStatus(message, retry=false) {
   $('status').textContent = message;
   $('status-box').hidden = !message;
   $('retry').hidden = !retry;
-  $('room-views').hidden = !ready || active !== 'room';
+  $('room-views').hidden = !viewOptions[active];
 }
 
 function liveControls(enabled) {
@@ -39,12 +57,15 @@ function buildNav() {
     const link = document.createElement('a');
     link.href = '#'+id;
     const thumb = new Image();
-    thumb.src = './images/tour/thumbs/'+id+'.jpg';
-    thumb.alt = '';
-    thumb.width = 43;
-    thumb.height = 31;
-    link.append(thumb,document.createTextNode(place.name));
-    if (id === 'room') link.className = 'indoor';
+    if(id!=='plan') {
+      thumb.src = './images/tour/thumbs/'+id+'.jpg';
+      thumb.alt = '';
+      thumb.width = 43;
+      thumb.height = 31;
+      link.append(thumb);
+    }
+    link.append(document.createTextNode(place.name));
+    if (id === 'film') link.className = 'indoor';
     if (id === 'plan') link.className = 'mobile-plan';
     link.addEventListener('click', () => {
       if (location.hash === link.hash) resetCamera();
@@ -57,8 +78,8 @@ function buildNav() {
 
 function resetCamera() {
   if (!model) return;
-  const interior = active === 'room';
-  const view = interior ? roomViews[$('room-view').selectedIndex] : places[active];
+  const interior = isInterior();
+  const view = selectedView();
   const offset = view.eye.map((value,i) => value-view.target[i]);
   const radius = Math.hypot(...offset);
   const theta = Math.atan2(offset[0],offset[2]);
@@ -67,7 +88,11 @@ function resetCamera() {
   const wideView = ['overview','plan','sports'].includes(active);
   let distance=radius;
   let fov=view.fov || 58;
-  if (widthRatio<1) {
+  if (view.ratio) {
+    // Match the full reference width when the viewport is narrower than the image.
+    fov=2*Math.atan(Math.tan(fov*Math.PI/360)*Math.max(1,view.ratio/widthRatio))*180/Math.PI;
+    fov=Math.min(85,fov);
+  } else if (widthRatio<1) {
     if(wideView) distance*=1.19;
     if(active==='gate') distance*=1.32;
     if(active==='stand' || active==='gym') {
@@ -75,7 +100,7 @@ function resetCamera() {
       fov=2*Math.atan(Math.tan(fov*Math.PI/360)*fit)*180/Math.PI;
     }
   }
-  model.setAttribute('min-camera-orbit',interior?'auto 1deg 0.12m':'auto 0deg 2m');
+  model.setAttribute('min-camera-orbit',interior || active==='garden'?'auto 1deg 0.12m':'auto 0deg 2m');
   model.setAttribute('max-camera-orbit',interior?'auto 178deg 14m':'auto 90deg 3200m');
   model.setAttribute('camera-target',view.target.map(n => n+'m').join(' '));
   model.setAttribute('camera-orbit',theta+'rad '+phi+'rad '+distance+'m');
@@ -93,7 +118,7 @@ async function loadModel(file) {
   modelFile = file;
   liveControls(false);
   $('poster').hidden = false;
-  setStatus(active === 'room'?'正在打开公开课室…':'正在打开校园…');
+  setStatus(isInterior()?'正在打开'+places[active].name+'…':'正在打开校园…');
   const fail = () => {
     if (generation !== loadGeneration) return;
     clearTimeout(slowTimer);
@@ -117,7 +142,7 @@ async function loadModel(file) {
       'environment-image':'./environment.hdr','shadow-softness':'0.8',
       'shadow-intensity':$('shadows').checked?'0.24':'0',
       exposure:effectiveExposure(), 'tone-mapping':'aces',
-      'min-field-of-view':'16deg','max-field-of-view':'70deg'
+      'min-field-of-view':'5deg','max-field-of-view':'85deg'
     };
     for (const [k,v] of Object.entries(properties)) element.setAttribute(k,v);
     element.addEventListener('error',fail,{once:true});
@@ -125,7 +150,7 @@ async function loadModel(file) {
       if (generation !== loadGeneration) return;
       clearTimeout(slowTimer);
       const backdrop=element.model.getMaterialByName('背景 · Warm mist');
-      if(backdrop){
+      if(backdrop?.isLoaded){
         backdrop.setAlphaMode('MASK');
         backdrop.setAlphaCutoff(.5);
         backdrop.pbrMetallicRoughness.setBaseColorFactor([1,1,1,0]);
@@ -148,10 +173,20 @@ async function loadModel(file) {
 }
 
 function selectPlace() {
-  const hash = location.hash.slice(1);
+  const [hash,wanted] = location.hash.slice(1).split('/');
   active = Object.hasOwn(places,hash) ? hash : 'overview';
   const place = places[active];
-  document.title = place.name+' · 厦外海沧';
+  const options=viewOptions[active] || [];
+  shot=options.find(v=>v.id===wanted) || options[0];
+  const films=active==='film';
+  const families=films?[...new Set(options.map(v=>v.family))]:[];
+  $('film-set').replaceChildren(...families.map(f=>new Option(f,f)));
+  $('set-label').hidden=$('film-set').hidden=!films;
+  if(films)$('film-set').value=shot.family;
+  const visible=films?options.filter(v=>v.family===shot.family):options;
+  $('room-view').replaceChildren(...visible.map(v=>new Option(v.label,v.id)));
+  if(shot)$('room-view').value=shot.id;
+  document.title = [shot?.family,shot?.label,place.name,'厦外海沧'].filter(Boolean).join(' · ');
   for (const a of document.querySelectorAll('#destinations a,.plan-link')) {
     if (a.hash === '#'+active) a.setAttribute('aria-current','location');
     else a.removeAttribute('aria-current');
@@ -159,36 +194,60 @@ function selectPlace() {
   $('place-picker').firstChild.textContent = place.name+' ';
   $('stage').setAttribute('aria-label',place.name+'三维模型');
   $('stage').dataset.close = String(!['overview','sports','plan','room'].includes(active));
-  $('room-view').selectedIndex = 0;
-  $('room-views').hidden = active!=='room' || !ready;
+  $('room-views').hidden = !options.length;
+  $('stage').dataset.choices=String(Boolean(options.length));
+  $('stage').dataset.night=String(shot?.id==='star-night');
   $('rotation').checked = false;
-  $('rotation').disabled = active==='room';
+  $('rotation').disabled = isInterior();
   if (model) { model.autoRotate=false; model.resetTurntableRotation(); }
   closePan();
   closePicker();
-  const file = active === 'room' ? ROOM : CAMPUS;
-  $('download').href = file;
-  $('download').textContent = active==='room'?'下载课室模型':'下载校园模型';
-  $('poster').src = place.image || places.overview.image;
-  $('poster').alt = (place.image?place.name:'校园全景')+'渲染';
-  if (file !== modelFile) loadModel(file);
-  else {
-    if (model) model.alt = place.name+'三维模型';
-    resetCamera();
-  }
+  applyView();
   if (hash === 'gallery' && !$('gallery').open) openGallery();
   if (hash === 'about' && !$('settings').open) $('settings').showModal();
 }
 
+function applyView() {
+  const place=places[active], view=selectedView(), file=view.file || CAMPUS;
+  $('download').href = file;
+  $('download').textContent = isInterior()?'下载教室模型':active==='garden'?'下载庭园模型':'下载校园模型';
+  $('poster').src = view.image || place.image || places.overview.image;
+  $('poster').alt = (place.image?place.name:'校园全景')+'渲染';
+  if (file !== modelFile) loadModel(file);
+  else {
+    if (model) {model.alt=place.name+'三维模型';model.exposure=effectiveExposure();}
+    resetCamera();
+  }
+}
+
 function renderSlide() {
-  const [label,src] = images[slide];
+  const [label,src,place,id] = images[slide];
+  const view=viewOptions[place]?.find(v=>v.id===id);
+  const oldRender=view?.beforeImage;
+  const canCompare=Boolean(oldRender || (localReferences && view?.referenceId));
+  $('compare-shot').hidden=!canCompare;
+  const compare=canCompare && comparing;
+  $('compare-shot').textContent=compare?(oldRender?'只看新版':'只看渲染'):(oldRender?'与旧版并排':'与实拍并排');
+  $('compare-shot').setAttribute('aria-pressed',String(compare));
+  $('reference-image').hidden=!compare;
+  $('gallery-pair').classList.toggle('compared',compare);
+  document.querySelector('.ref-panel span').textContent=oldRender?'修订前':'实拍';
+  document.querySelector('.model-panel span').textContent=oldRender?'修订后':'模型渲染';
+  $('reference-image').alt=oldRender?'修订前同机位模型':'同机位实拍';
+  if(compare)$('reference-image').src=oldRender || '/__reference/'+view.referenceId;
+  else $('reference-image').removeAttribute('src');
+  $('source-shot').hidden=!view?.source;
+  if(view?.source)$('source-shot').href=view.source;
+  else $('source-shot').removeAttribute('href');
   $('gallery-image').src = src;
   $('gallery-image').alt = label+'渲染';
   $('image-title').textContent = label;
   $('image-count').textContent = (slide+1)+' / '+images.length;
 }
 function openGallery() {
-  slide = Math.max(0,images.findIndex(p => p[2]===active));
+  const current=images.findIndex(p => p[2]===active && p[1]===selectedView().image);
+  slide = current>=0 ? current : Math.max(0,images.findIndex(p => p[2]===active));
+  comparing=false;
   renderSlide();
   $('gallery').showModal();
 }
@@ -226,7 +285,10 @@ $('place-picker').onclick = () => {
   if(open) $('destinations').querySelector('[aria-current]')?.focus();
 };
 $('viewport').addEventListener('pointerdown',() => {closePicker();closePan();});
-$('room-view').onchange = resetCamera;
+$('room-view').onchange = () => navigate(active,$('room-view').value);
+$('film-set').onchange = () => navigate('film',viewOptions.film.find(v=>v.family===$('film-set').value).id);
+$('open-shot').onclick = () => {const [, ,place,id]=images[slide];$('gallery').close();navigate(place,id);};
+$('compare-shot').onclick = () => {comparing=!comparing;renderSlide();};
 $('reset').onclick = () => { stopRotation(); model.resetTurntableRotation(); resetCamera(); };
 $('zoom-in').onclick = () => zoom(.8);
 $('zoom-out').onclick = () => zoom(1.25);
@@ -235,7 +297,7 @@ $('pan-button').onclick = () => {
   $('pan-button').setAttribute('aria-expanded',String(!$('pan-pad').hidden));
 };
 $('pan-pad').onclick = e => { if(e.target.dataset.pan) pan(e.target.dataset.pan); };
-$('retry').onclick = () => loadModel(active==='room'?ROOM:CAMPUS);
+$('retry').onclick = () => loadModel(selectedView().file || CAMPUS);
 $('gallery-button').onclick = openGallery;
 $('prev').onclick = () => shiftSlide(-1);
 $('next').onclick = () => shiftSlide(1);
@@ -249,7 +311,7 @@ document.querySelectorAll('dialog').forEach(d => {
   });
 });
 function effectiveExposure() {
-  return Number($('exposure').value)*(active==='room'?.69:.86);
+  return Number($('exposure').value)*(active==='room'?.69:shot?.id==='star-night'?.63:.92);
 }
 $('exposure').oninput = () => { if(model) model.exposure=effectiveExposure(); };
 $('shadows').onchange = () => { if(model) model.shadowIntensity=$('shadows').checked?.24:0; };
@@ -259,7 +321,7 @@ $('capture').onclick = async () => {
   try {
     const data=await model.toBlob({mimeType:'image/png'});
     const a=document.createElement('a');
-    a.href=URL.createObjectURL(data); a.download=places[active].name+'.png'; a.click();
+    a.href=URL.createObjectURL(data); a.download=(selectedView().label||places[active].name)+'.png'; a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),10000);
   } catch { $('settings').close(); setStatus('当前浏览器无法保存画面。'); }
 };
